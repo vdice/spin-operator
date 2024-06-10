@@ -23,6 +23,59 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{/*
+This chart may be used as part of a cloud provider marketplace offering.
+Cloud providers may require certain values rules, for example Azure requires all images to flow through
+via global.azure.images.
+*/}}
+
+{{/*
+  Spin Operator image
+*/}}
+{{- define "spin-operator.manager.image" -}}
+{{/*
+  If Azure Marketplace, construct image from supplied values
+*/}}
+{{- if and
+  .Values.global
+  .Values.global.azure
+  .Values.global.azure.images
+  .Values.global.azure.images.spinOperator
+  .Values.global.azure.images.spinOperator.registry
+  .Values.global.azure.images.spinOperator.image
+  .Values.global.azure.images.spinOperator.tag -}}
+{{- printf "%s/%s:%s" .Values.global.azure.images.spinOperator.registry .Values.global.azure.images.spinOperator.image .Values.global.azure.images.spinOperator.tag }}
+{{- else -}}
+{{/*
+  Use default values
+*/}}
+{{- printf "%s:%s" .Values.controllerManager.manager.image.repository (.Values.controllerManager.manager.image.tag | default .Chart.AppVersion) }}
+{{- end }}
+{{- end }}
+
+{{/*
+  RBAC proxy image
+*/}}
+{{- define "spin-operator.kubeRbacProxy.image" -}}
+{{/*
+  If Azure Marketplace, construct image from supplied values
+*/}}
+{{- if and
+  .Values.global
+  .Values.global.azure
+  .Values.global.azure.images
+  .Values.global.azure.images.kubeRbacProxy
+  .Values.global.azure.images.kubeRbacProxy.registry
+  .Values.global.azure.images.kubeRbacProxy.image
+  .Values.global.azure.images.kubeRbacProxy.tag -}}
+{{- printf "%s/%s:%s" .Values.global.azure.images.kubeRbacProxy.registry .Values.global.azure.images.kubeRbacProxy.image .Values.global.azure.images.kubeRbacProxy.tag }}
+{{- else -}}
+{{/*
+  Use default values
+*/}}
+{{- printf "%s:%s" .Values.controllerManager.kubeRbacProxy.image.repository .Values.controllerManager.kubeRbacProxy.image.tag }}
+{{- end }}
+{{- end }}
 
 {{/*
 helmify replaces namespace name with `{{ .Release.Namespace }}` in dnsNames for Certificate object
