@@ -454,15 +454,14 @@ func constructDeployment(ctx context.Context, app *spinv1alpha1.SpinApp, config 
 					Annotations: templateAnnotations,
 				},
 				Spec: corev1.PodSpec{
-					RuntimeClassName: &config.RuntimeClassName,
 					Containers: []corev1.Container{
 						{
-							Name:    app.Name,
-							Image:   app.Spec.Image,
-							Command: []string{"/"},
+							Name:  app.Name,
+							Image: config.SpinImage,
+							Args:  []string{"up", "--listen", "0.0.0.0:8080", "-f", app.Spec.Image},
 							Ports: []corev1.ContainerPort{{
 								Name:          spinapp.HTTPPortName,
-								ContainerPort: spinapp.DefaultHTTPPort,
+								ContainerPort: 8080,
 							}},
 							Env:            env,
 							VolumeMounts:   volumeMounts,
