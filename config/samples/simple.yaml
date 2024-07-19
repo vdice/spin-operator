@@ -3,6 +3,6 @@ kind: SpinApp
 metadata:
   name: simple-spinapp
 spec:
-  image: "ttl.sh/my-simple-app"
+  image: "ghcr.io/spinkube/containerd-shim-spin/examples/spin-rust-hello:v0.13.0"
   replicas: 1
-  executor: spintainer
+  executor: containerd-shim-spin

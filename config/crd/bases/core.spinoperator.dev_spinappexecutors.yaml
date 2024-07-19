@@ -65,7 +65,6 @@ spec:
                     description: |-
                       RuntimeClassName is the runtime class name that should be used by pods created
                       as part of a deployment. This should only be define when SpintainerImage is not defined.
-                      TODO: Should this become a pointer if it is optional?
                     type: string
                   spinImage:
                     description: |-
@@ -73,7 +72,6 @@ spec:
                       execute your SpinApp. This is an alternative to using the shim to execute
                       your SpinApp. This should only be defined when RuntimeClassName is not
                       defined.
-                      TODO: Should this become a pointer if it is optional?
                     type: string
                 type: object
             required:
