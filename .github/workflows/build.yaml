@@ -12,8 +12,11 @@ permissions:
   packages: read
 
 jobs:
+  spintainer:
+    uses: ./.github/workflows/spintainer.yaml
   build:
     runs-on: ubuntu-latest
+    needs: spintainer
     steps:
       - uses: actions/checkout@v4
       - name: Setup Go
