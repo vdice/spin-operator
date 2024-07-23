@@ -10,13 +10,12 @@ env:
   # What about fermyon/spin building and pushing this image on releases?!
   SPIN_VERSION: v2.6.0
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   docker:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4

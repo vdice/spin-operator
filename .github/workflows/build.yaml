@@ -9,7 +9,8 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  packages: read
+  # spintainer may publish the image on merges to main
+  packages: write
 
 jobs:
   spintainer:
