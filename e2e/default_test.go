@@ -17,6 +17,7 @@ import (
 	"sigs.k8s.io/e2e-framework/pkg/features"
 
 	spinapps_v1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
+	"github.com/spinkube/spin-operator/internal/generics"
 )
 
 var runtimeClassName = "wasmtime-spin-v2"
@@ -35,13 +36,13 @@ func TestDefaultSetup(t *testing.T) {
 			client = cfg.Client()
 
 			if err := spinapps_v1alpha1.AddToScheme(client.Resources(testNamespace).GetScheme()); err != nil {
-				t.Fatalf("failed to register the spinapps_v1alpha1 types with Kuberenets scheme: %s", err)
+				t.Fatalf("failed to register the spinapps_v1alpha1 types with Kubernetes scheme: %s", err)
 			}
 
 			return ctx
 		}).
 		Assess("spin app custom resource is created", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
-			testSpinApp := newSpinAppCR(testSpinAppName, helloWorldImage)
+			testSpinApp := newSpinAppCR(testSpinAppName, helloWorldImage, "containerd-shim-spin")
 
 			if err := client.Resources().Create(ctx, newContainerdShimExecutor(testNamespace)); err != nil {
 				t.Fatalf("Failed to create spinappexecutor: %s", err)
@@ -64,7 +65,6 @@ func TestDefaultSetup(t *testing.T) {
 			return ctx
 		}).
 		Assess("spin app deployment and service are available", func(ctx context.Context, t *testing.T, cfg *envconf.Config) context.Context {
-
 			// wait for deployment to be ready
 			if err := wait.For(
 				conditions.New(client.Resources()).DeploymentAvailable(testSpinAppName, testNamespace),
@@ -134,8 +134,8 @@ func TestDefaultSetup(t *testing.T) {
 	testEnv.Test(t, defaultTest)
 }
 
-func newSpinAppCR(name, image string) *spinapps_v1alpha1.SpinApp {
-	return &spinapps_v1alpha1.SpinApp{
+func newSpinAppCR(name, image, executor string) *spinapps_v1alpha1.SpinApp {
+	var testSpinApp = &spinapps_v1alpha1.SpinApp{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: testNamespace,
@@ -143,7 +143,7 @@ func newSpinAppCR(name, image string) *spinapps_v1alpha1.SpinApp {
 		Spec: spinapps_v1alpha1.SpinAppSpec{
 			Replicas: 1,
 			Image:    image,
-			Executor: "containerd-shim-spin",
+			Executor: executor,
 		},
 	}
 }
@@ -157,7 +157,7 @@ func newContainerdShimExecutor(namespace string) *spinapps_v1alpha1.SpinAppExecu
 		Spec: spinapps_v1alpha1.SpinAppExecutorSpec{
 			CreateDeployment: true,
 			DeploymentConfig: &spinapps_v1alpha1.ExecutorDeploymentConfig{
-				RuntimeClassName:      runtimeClassName,
+				RuntimeClassName:      generics.Ptr(runtimeClassName),
 				InstallDefaultCACerts: true,
 				CACertSecret:          testCACertSecret,
 			},
