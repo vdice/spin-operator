@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} debian:bullseye-slim AS install
+FROM debian:bullseye-slim AS install
 ARG spin_version=v2.6.0
 WORKDIR /opt/install
 
@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y curl
 RUN apt-get install -y git
 
 # Install Static Spin binary
-RUN ARCH=$(uname -m) && \
+RUN ARCH=$(uname -m | sed s/x86_64/amd64/) && \
   curl -fsSL -o spin-${spin_version}-static-linux-${ARCH}.tar.gz https://github.com/fermyon/spin/releases/download/${spin_version}/spin-${spin_version}-static-linux-${ARCH}.tar.gz && \
   tar xvf spin-${spin_version}-static-linux-${ARCH}.tar.gz
 
