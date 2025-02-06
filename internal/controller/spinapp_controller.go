@@ -52,7 +52,7 @@ const (
 	// SpinOperatorFinalizer is the finalizer used by the spin operator
 	SpinOperatorFinalizer = "core.spinkube.dev/finalizer"
 
-	// FieldManger is used to declare that the spin operator owns specific fields on child resources
+	// FieldManager is used to declare that the spin operator owns specific fields on child resources
 	FieldManager = "spin-operator"
 )
 
