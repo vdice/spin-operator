@@ -631,7 +631,7 @@ func TestReconcile_Integration_Deployment_SpinCAInjection(t *testing.T) {
 	wg.Wait()
 }
 
-func TestReconcile_Integration_WorkloadIdentity_Azure(t *testing.T) {
+func TestReconcile_Integration_Deployment_ServiceAccountName(t *testing.T) {
 	t.Parallel()
 
 	envTest, mgr, _ := setupController(t)
@@ -646,7 +646,6 @@ func TestReconcile_Integration_WorkloadIdentity_Azure(t *testing.T) {
 		wg.Done()
 	}()
 
-	// Create an executor that creates a deployment
 	executor := &spinv1alpha1.SpinAppExecutor{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "executor",
@@ -655,7 +654,7 @@ func TestReconcile_Integration_WorkloadIdentity_Azure(t *testing.T) {
 		Spec: spinv1alpha1.SpinAppExecutorSpec{
 			CreateDeployment: true,
 			DeploymentConfig: &spinv1alpha1.ExecutorDeploymentConfig{
-				RuntimeClassName: generics.Ptr("a-runtime-class"),
+				RuntimeClassName: generics.Ptr("foobar"),
 			},
 		},
 	}
@@ -668,34 +667,25 @@ func TestReconcile_Integration_WorkloadIdentity_Azure(t *testing.T) {
 			Namespace: "default",
 		},
 		Spec: spinv1alpha1.SpinAppSpec{
-			Executor: "executor",
-			Image:    "ghcr.io/radu-matei/perftest:v1",
-			WorkloadIdentity: &spinv1alpha1.WorkloadIdentity{
-				ServiceAccountName: "custom-sa",
-				ProviderMetadata: map[string]string{
-					"azure": "true",
-				},
-			},
+			Executor:           "executor",
+			Image:              "ghcr.io/radu-matei/perftest:v1",
+			ServiceAccountName: "my-service-account",
 		},
 	}
 
 	require.NoError(t, envTest.k8sClient.Create(ctx, spinApp))
 
-	// Wait for the underlying deployment to exist
 	var deployment appsv1.Deployment
 	require.Eventually(t, func() bool {
 		err := envTest.k8sClient.Get(ctx,
 			types.NamespacedName{
 				Namespace: "default",
-				Name:      "app"},
+				Name:      spinApp.Name},
 			&deployment)
 		return err == nil
 	}, 3*time.Second, 100*time.Millisecond)
 
-	// Verify Azure workload identity label is set
-	require.Equal(t, "true", deployment.Spec.Template.ObjectMeta.Labels["azure.workload.identity/use"])
-	// Verify service account name is set
-	require.Equal(t, "custom-sa", deployment.Spec.Template.Spec.ServiceAccountName)
+	require.Equal(t, "my-service-account", deployment.Spec.Template.Spec.ServiceAccountName)
 
 	// Terminate the context to force the manager to shut down.
 	cancelFunc()

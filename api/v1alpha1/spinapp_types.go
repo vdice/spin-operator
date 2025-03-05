@@ -87,9 +87,10 @@ type SpinAppSpec struct {
 	// +kubebuilder:validation:MinItems:=1
 	Components []string `json:"components,omitempty"`
 
-	// WorkloadIdentity defines the workload identity configuration for cloud provider authentication.
+	// ServiceAccountName is the name of the Kubernetes service account to use for the pod.
+	// If not specified, the default service account will be used.
 	// +optional
-	WorkloadIdentity *WorkloadIdentity `json:"workloadIdentity,omitempty"`
+	ServiceAccountName string `json:"serviceAccountName,omitempty"`
 }
 
 // SpinAppStatus defines the observed state of SpinApp
@@ -289,17 +290,6 @@ type HTTPHealthProbe struct {
 type HTTPHealthProbeHeader struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
-}
-
-// WorkloadIdentity defines the configuration for cloud provider workload identity.
-type WorkloadIdentity struct {
-	// ServiceAccountName is the name of the Kubernetes service account to use for workload identity.
-	// +kubebuilder:validation:Required
-	ServiceAccountName string `json:"serviceAccountName"`
-
-	// ProviderMetadata contains cloud provider-specific configuration for workload identity.
-	// +kubebuilder:validation:Required
-	ProviderMetadata map[string]string `json:"providerMetadata"`
 }
 
 func init() {

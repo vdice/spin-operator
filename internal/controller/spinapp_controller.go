@@ -422,15 +422,6 @@ func constructDeployment(ctx context.Context, app *spinv1alpha1.SpinApp, config 
 	}
 	maps.Copy(templateLabels, readyLabels)
 
-	// Add Azure workload identity label if configured
-	if app.Spec.WorkloadIdentity != nil {
-		if val, ok := app.Spec.WorkloadIdentity.ProviderMetadata["azure"]; ok {
-			if val == "true" {
-				templateLabels["azure.workload.identity/use"] = "true"
-			}
-		}
-	}
-
 	// TODO: Once we land admission webhooks write some validation for this e.g.
 	// don't allow setting memory limit with cyclotron runtime.
 	resources := corev1.ResourceRequirements{
@@ -452,6 +443,8 @@ func constructDeployment(ctx context.Context, app *spinv1alpha1.SpinApp, config 
 	}
 
 	labels := constructAppLabels(app)
+
+	serviceAccountName := getServiceAccountName(ctx, app)
 
 	var container corev1.Container
 	if config.RuntimeClassName != nil {
@@ -518,7 +511,7 @@ func constructDeployment(ctx context.Context, app *spinv1alpha1.SpinApp, config 
 				},
 				Spec: corev1.PodSpec{
 					RuntimeClassName:   config.RuntimeClassName,
-					ServiceAccountName: getServiceAccountName(app),
+					ServiceAccountName: serviceAccountName,
 					Containers:         []corev1.Container{container},
 					ImagePullSecrets:   app.Spec.ImagePullSecrets,
 					Volumes:            volumes,
@@ -541,12 +534,22 @@ func constructDeployment(ctx context.Context, app *spinv1alpha1.SpinApp, config 
 }
 
 // getServiceAccountName returns the service account name to use for the deployment.
-// If workload identity is configured, it returns the configured service account name.
+// If serviceAccountName is specified on the SpinApp, it returns that value.
 // Otherwise, it returns "default" which is the Kubernetes default.
-func getServiceAccountName(app *spinv1alpha1.SpinApp) string {
-	if app.Spec.WorkloadIdentity != nil {
-		return app.Spec.WorkloadIdentity.ServiceAccountName
+func getServiceAccountName(ctx context.Context, app *spinv1alpha1.SpinApp) string {
+	log := logging.FromContext(ctx).WithValues("component", "getServiceAccountName")
+
+	log.Debug("Determining service account name",
+		"app", app.Name,
+		"namespace", app.Namespace,
+		"serviceAccountNameInSpec", app.Spec.ServiceAccountName)
+
+	if app.Spec.ServiceAccountName != "" {
+		log.Debug("Using service account from SpinApp", "serviceAccountName", app.Spec.ServiceAccountName)
+		return app.Spec.ServiceAccountName
 	}
+
+	log.Info("Using default service account", "serviceAccountName", "default")
 	return "default"
 }
 
