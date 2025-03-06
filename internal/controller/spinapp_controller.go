@@ -549,7 +549,6 @@ func getServiceAccountName(ctx context.Context, app *spinv1alpha1.SpinApp) strin
 		return app.Spec.ServiceAccountName
 	}
 
-	log.Info("Using default service account", "serviceAccountName", "default")
 	return "default"
 }
 
