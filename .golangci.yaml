@@ -61,13 +61,10 @@ linters:
 
 linters-settings:
   govet:
-    check-shadowing: false
-  golint:
-    min-confidence: 0
+    disable:
+    - shadow
   gocyclo:
     min-complexity: 15
-  maligned:
-    suggest-new: true
   dupl:
     # Don't detect small duplications, but if we're duplicating functions across
     # packages, we should consider refactoring.
