@@ -444,6 +444,8 @@ func constructDeployment(ctx context.Context, app *spinv1alpha1.SpinApp, config 
 
 	labels := constructAppLabels(app)
 
+	serviceAccountName := getServiceAccountName(ctx, app)
+
 	var container corev1.Container
 	if config.RuntimeClassName != nil {
 		container = corev1.Container{
@@ -508,10 +510,11 @@ func constructDeployment(ctx context.Context, app *spinv1alpha1.SpinApp, config 
 					Annotations: templateAnnotations,
 				},
 				Spec: corev1.PodSpec{
-					RuntimeClassName: config.RuntimeClassName,
-					Containers:       []corev1.Container{container},
-					ImagePullSecrets: app.Spec.ImagePullSecrets,
-					Volumes:          volumes,
+					RuntimeClassName:   config.RuntimeClassName,
+					ServiceAccountName: serviceAccountName,
+					Containers:         []corev1.Container{container},
+					ImagePullSecrets:   app.Spec.ImagePullSecrets,
+					Volumes:            volumes,
 				},
 			},
 		},
@@ -528,6 +531,25 @@ func constructDeployment(ctx context.Context, app *spinv1alpha1.SpinApp, config 
 	}
 
 	return dep, nil
+}
+
+// getServiceAccountName returns the service account name to use for the deployment.
+// If serviceAccountName is specified on the SpinApp, it returns that value.
+// Otherwise, it returns "default" which is the Kubernetes default.
+func getServiceAccountName(ctx context.Context, app *spinv1alpha1.SpinApp) string {
+	log := logging.FromContext(ctx).WithValues("component", "getServiceAccountName")
+
+	log.Debug("Determining service account name",
+		"app", app.Name,
+		"namespace", app.Namespace,
+		"serviceAccountNameInSpec", app.Spec.ServiceAccountName)
+
+	if app.Spec.ServiceAccountName != "" {
+		log.Debug("Using service account from SpinApp", "serviceAccountName", app.Spec.ServiceAccountName)
+		return app.Spec.ServiceAccountName
+	}
+
+	return "default"
 }
 
 // findDeploymentForApp finds the deployment for a SpinApp.

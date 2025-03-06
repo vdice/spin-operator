@@ -630,3 +630,64 @@ func TestReconcile_Integration_Deployment_SpinCAInjection(t *testing.T) {
 	cancelFunc()
 	wg.Wait()
 }
+
+func TestReconcile_Integration_Deployment_ServiceAccountName(t *testing.T) {
+	t.Parallel()
+
+	envTest, mgr, _ := setupController(t)
+
+	ctx, cancelFunc := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelFunc()
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func() {
+		require.NoError(t, mgr.Start(ctx))
+		wg.Done()
+	}()
+
+	executor := &spinv1alpha1.SpinAppExecutor{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "executor",
+			Namespace: "default",
+		},
+		Spec: spinv1alpha1.SpinAppExecutorSpec{
+			CreateDeployment: true,
+			DeploymentConfig: &spinv1alpha1.ExecutorDeploymentConfig{
+				RuntimeClassName: generics.Ptr("foobar"),
+			},
+		},
+	}
+
+	require.NoError(t, envTest.k8sClient.Create(ctx, executor))
+
+	spinApp := &spinv1alpha1.SpinApp{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "app",
+			Namespace: "default",
+		},
+		Spec: spinv1alpha1.SpinAppSpec{
+			Executor:           "executor",
+			Image:              "ghcr.io/radu-matei/perftest:v1",
+			ServiceAccountName: "my-service-account",
+		},
+	}
+
+	require.NoError(t, envTest.k8sClient.Create(ctx, spinApp))
+
+	var deployment appsv1.Deployment
+	require.Eventually(t, func() bool {
+		err := envTest.k8sClient.Get(ctx,
+			types.NamespacedName{
+				Namespace: "default",
+				Name:      spinApp.Name},
+			&deployment)
+		return err == nil
+	}, 3*time.Second, 100*time.Millisecond)
+
+	require.Equal(t, "my-service-account", deployment.Spec.Template.Spec.ServiceAccountName)
+
+	// Terminate the context to force the manager to shut down.
+	cancelFunc()
+	wg.Wait()
+}

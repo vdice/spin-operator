@@ -86,6 +86,11 @@ type SpinAppSpec struct {
 	// If this is not provided all components are executed.
 	// +kubebuilder:validation:MinItems:=1
 	Components []string `json:"components,omitempty"`
+
+	// ServiceAccountName is the name of the Kubernetes service account to use for the pod.
+	// If not specified, the default service account will be used.
+	// +optional
+	ServiceAccountName string `json:"serviceAccountName,omitempty"`
 }
 
 // SpinAppStatus defines the observed state of SpinApp

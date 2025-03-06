@@ -64,6 +64,7 @@ func (v *SpinAppValidator) validateSpinApp(ctx context.Context, spinApp *spinv1a
 	if err := validateAnnotations(spinApp.Spec, executor); err != nil {
 		allErrs = append(allErrs, err)
 	}
+
 	if len(allErrs) == 0 {
 		return nil
 	}

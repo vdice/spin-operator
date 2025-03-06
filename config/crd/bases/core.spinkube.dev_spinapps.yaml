@@ -532,6 +532,11 @@ spec:
                       type: object
                     type: array
                 type: object
+              serviceAccountName:
+                description: |-
+                  ServiceAccountName is the name of the Kubernetes service account to use for the pod.
+                  If not specified, the default service account will be used.
+                type: string
               serviceAnnotations:
                 additionalProperties:
                   type: string
