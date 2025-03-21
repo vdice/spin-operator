@@ -11,7 +11,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/e2e-framework/klient/conf"
-	"sigs.k8s.io/e2e-framework/support/utils"
+	"sigs.k8s.io/e2e-framework/pkg/utils"
 )
 
 const k3dImage = "ghcr.io/spinkube/containerd-shim-spin/k3d:20241015-215845-g71c8351"
