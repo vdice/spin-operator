@@ -13,14 +13,14 @@ already done so, please ensure the following:
 
 1. Install the containerd-shim-spin SpinAppExecutor:
 
-  $ kubectl apply -f https://github.com/spinkube/spin-operator/releases/download/v{{ .Chart.Version }}/spin-operator.shim-executor.yaml
+  $ kubectl apply -f https://github.com/spinframework/spin-operator/releases/download/v{{ .Chart.Version }}/spin-operator.shim-executor.yaml
 
 2. Install the wasmtime-spin-v2 RuntimeClass:
 
-  $ kubectl apply -f https://github.com/spinkube/spin-operator/releases/download/v{{ .Chart.Version }}/spin-operator.runtime-class.yaml
+  $ kubectl apply -f https://github.com/spinframework/spin-operator/releases/download/v{{ .Chart.Version }}/spin-operator.runtime-class.yaml
 
 You are now ready to deploy your first Spin app!
 
 For further details, see this chart's README:
 
-  $ helm show readme oci://ghcr.io/spinkube/charts/spin-operator
+  $ helm show readme oci://ghcr.io/spinframework/charts/spin-operator

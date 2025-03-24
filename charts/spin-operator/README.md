@@ -17,8 +17,8 @@ Prior to installing the chart, you'll need to ensure the following:
 - spin-operator CustomResourceDefinition (CRD) resources are installed. This includes the SpinApp CRD representing Spin applications to be scheduled on the cluster.
 
   ```console
-  $ kubectl apply -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/crd/bases/core.spinkube.dev_spinapps.yaml
-  $ kubectl apply -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/crd/bases/core.spinkube.dev_spinappexecutors.yaml
+  $ kubectl apply -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/crd/bases/core.spinkube.dev_spinapps.yaml
+  $ kubectl apply -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/crd/bases/core.spinkube.dev_spinappexecutors.yaml
   ```
 
 ## Installing the chart
@@ -30,7 +30,7 @@ $ helm install spin-operator \
   --namespace spin-operator \
   --create-namespace \
   --version {{ CHART_VERSION }} \
-  oci://ghcr.io/spinkube/charts/spin-operator
+  oci://ghcr.io/spinframework/charts/spin-operator
 ```
 
 ## Post-installation
@@ -40,13 +40,13 @@ spin-operator depends on the following resources. If not already present on the 
 - An application executor is installed. This is the executor that spin-operator uses to run Spin applications.
 
   ```console
-  $ kubectl apply -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/samples/spin-shim-executor.yaml
+  $ kubectl apply -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/samples/spin-shim-executor.yaml
   ```
 
 - A RuntimeClass resource for the `wasmtime-spin-v2` container runtime is installed. This is the runtime that Spin applications use.
 
   ```console
-  $ kubectl apply -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/samples/spin-runtime-class.yaml
+  $ kubectl apply -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/samples/spin-runtime-class.yaml
   ```
 
 ## Upgrading the chart
@@ -54,8 +54,8 @@ spin-operator depends on the following resources. If not already present on the 
 Note that you may also need to upgrade the spin-operator CRDs in tandem with upgrading the Helm release:
 
 ```console
-$ kubectl apply -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/crd/bases/core.spinkube.dev_spinapps.yaml
-$ kubectl apply -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/crd/bases/core.spinkube.dev_spinappexecutors.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/crd/bases/core.spinkube.dev_spinapps.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/crd/bases/core.spinkube.dev_spinappexecutors.yaml
 ```
 
 To upgrade the `spin-operator` release, run the following:
@@ -64,7 +64,7 @@ To upgrade the `spin-operator` release, run the following:
 $ helm upgrade spin-operator \
   --namespace spin-operator \
   --version {{ CHART_VERSION }} \
-  oci://ghcr.io/spinkube/charts/spin-operator
+  oci://ghcr.io/spinframework/charts/spin-operator
 ```
 
 ## Uninstalling the chart
@@ -80,8 +80,8 @@ This will remove all Kubernetes resources associated with the chart and deletes 
 To completely uninstall all resources related to spin-operator, you may want to delete the corresponding CRD resources and, optionally, the RuntimeClass:
 
 ```console
-$ kubectl delete -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/samples/spin-runtime-class.yaml
-$ kubectl delete -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/samples/spin-shim-executor.yaml
-$ kubectl delete -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/crd/bases/core.spinkube.dev_spinapps.yaml
-$ kubectl delete -f https://raw.githubusercontent.com/spinkube/spin-operator/main/config/crd/bases/core.spinkube.dev_spinappexecutors.yaml
+$ kubectl delete -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/samples/spin-runtime-class.yaml
+$ kubectl delete -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/samples/spin-shim-executor.yaml
+$ kubectl delete -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/crd/bases/core.spinkube.dev_spinapps.yaml
+$ kubectl delete -f https://raw.githubusercontent.com/spinframework/spin-operator/main/config/crd/bases/core.spinkube.dev_spinappexecutors.yaml
 ```
