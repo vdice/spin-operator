@@ -30,6 +30,11 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
+      - name: Verify make has been run
+        run: |
+          make
+          git diff --exit-code || (echo "Generated files are out of date. Please run 'make' and commit the changes." && exit 1)
+
       - name: Build
         run: CGO_ENABLED=0 go build -v ./...
 
