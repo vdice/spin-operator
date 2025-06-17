@@ -1,99 +1,105 @@
-issues:
-  # The default exclude list seems rather aggressive, opt-in when needed instead
-  exclude-use-default: false
-
-  exclude-rules:
-    # Duplicated errcheck checks
-    - linters: [gosec]
-      text: G104
-    # Duplicated errcheck checks
-    - linters: [staticcheck]
-      text: SA5001
-    # We don't require comments on everything
-    - linters: [golint]
-      text: should have( a package)? comment
-    # very long lines are ok if they're URLs
-    - linters: [lll]
-      source: https?://
-    # very long lines are ok if they're go:generate
-    - linters: [lll]
-      source: "^//go:generate "
-    # Ignore errcheck on deferred Close
-    - linters: [errcheck]
-      source: ^\s*defer .*\.Close(.*)$
-    # Ignore ineffective assignments to ctx
-    - linters: [ineffassign]
-      source: ^\s*ctx.*=.*$
-    - linters: [staticcheck]
-      source: ^\s*ctx.*=.*$
-    # Don't require package docs
-    - linters: [stylecheck]
-      text: ST1000
-    # Unparam is allowed in tests
-    - linters: [unparam]
-      path: _test\.go
-
+version: "2"
 linters:
-  disable-all: true
+  default: none
   enable:
     - bodyclose
     - depguard
     - errcheck
     - errorlint
+    - forbidigo
     - goconst
     - gocyclo
-    - gofmt
-    - goimports
     - gosec
-    - gosimple
     - govet
     - ineffassign
     - lll
     - misspell
     - nakedret
     - staticcheck
-    - stylecheck
-    - typecheck
     - unconvert
     - unparam
     - unused
-    - forbidigo
-
-linters-settings:
-  govet:
-    disable:
-    - shadow
-  gocyclo:
-    min-complexity: 15
-  dupl:
-    # Don't detect small duplications, but if we're duplicating functions across
-    # packages, we should consider refactoring.
-    threshold: 100
-  depguard:
+  settings:
+    depguard:
+      rules:
+        main:
+          files:
+            - $all
+          deny:
+            - pkg: github.com/pkg/errors
+              desc: 'use Go 1.13 errors instead: https://blog.golang.org/go1.13-errors'
+        testing:
+          files:
+            - $test
+          deny:
+            - pkg: github.com/stretchr/testify/assert
+              desc: use github.com/stretchr/testify/require instead
+    dupl:
+      threshold: 100
+    forbidigo:
+      forbid:
+        - pattern: ^print.*$
+        - pattern: ^fmt\.Print.*$
+          msg: Do not commit print statements.
+        - pattern: ^os\.Getenv
+          msg: Pull values through configuration rather than os.Getenv
+    goconst:
+      min-len: 8
+      min-occurrences: 10
+    gocyclo:
+      min-complexity: 15
+    govet:
+      disable:
+        - shadow
+    lll:
+      line-length: 180
+  exclusions:
+    generated: lax
     rules:
-      main:
-        files:
-          - '$all'
-        deny:
-          - pkg: "github.com/pkg/errors"
-            desc: "use Go 1.13 errors instead: https://blog.golang.org/go1.13-errors"
-      testing:
-        files: ['$test']
-        deny:
-          - pkg: "github.com/stretchr/testify/assert"
-            desc: "use github.com/stretchr/testify/require instead"
-  goconst:
-    min-len: 8
-    min-occurrences: 10
-  lll:
-    line-length: 180
-  forbidigo:
-    # Forbid the following identifiers (list of regexp).
-    # Default: ["^(fmt\\.Print(|f|ln)|print|println)$"]
-    forbid:
-      # Builtin function:
-      - ^print.*$
-      - p: ^fmt\.Print.*$
-        msg: Do not commit print statements.
-      - p: ^os\.Getenv
-        msg: Pull values through configuration rather than os.Getenv
+      - linters:
+          - gosec
+        text: G104
+      - linters:
+          - staticcheck
+        text: SA5001
+      - linters:
+          - staticcheck
+        text: QF1008
+      - linters:
+          - golint
+        text: should have( a package)? comment
+      - linters:
+          - lll
+        source: https?://
+      - linters:
+          - lll
+        source: '^//go:generate '
+      - linters:
+          - errcheck
+        source: ^\s*defer .*\.Close(.*)$
+      - linters:
+          - ineffassign
+        source: ^\s*ctx.*=.*$
+      - linters:
+          - staticcheck
+        source: ^\s*ctx.*=.*$
+      - linters:
+          - staticcheck
+        text: ST1000
+      - linters:
+          - unparam
+        path: _test\.go
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
