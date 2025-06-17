@@ -2,15 +2,17 @@ package webhook
 
 import (
 	"context"
+	"fmt"
 
 	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
 	"github.com/spinkube/spin-operator/internal/logging"
+	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
@@ -62,6 +64,10 @@ func (v *SpinAppValidator) validateSpinApp(ctx context.Context, spinApp *spinv1a
 		allErrs = append(allErrs, err)
 	}
 	if err := validateAnnotations(spinApp.Spec, executor); err != nil {
+		allErrs = append(allErrs, err)
+	}
+
+	if err := validateInvocationLimits(spinApp.Spec); err != nil {
 		allErrs = append(allErrs, err)
 	}
 
@@ -134,6 +140,63 @@ func validateAnnotations(spec spinv1alpha1.SpinAppSpec, executor *spinv1alpha1.S
 	}
 	if len(spec.PodAnnotations) != 0 {
 		return field.Invalid(field.NewPath("spec").Child("podAnnotations"), spec.PodAnnotations, "podAnnotations can't be set when the executor does not use operator deployments")
+	}
+
+	return nil
+}
+
+// Helper function to validate invocation quantity against resource constraints
+func validateInvocationQuantity(invocationQuantity resource.Quantity, spec spinv1alpha1.SpinAppSpec, resourceType corev1.ResourceName) *field.Error {
+	requestQuantity, hasRequest := spec.Resources.Requests[resourceType]
+	limitQuantity, hasLimit := spec.Resources.Limits[resourceType]
+
+	// Determine the constraint to compare against
+	var constraintQuantity resource.Quantity
+	var constraintType string
+
+	switch {
+	case hasRequest && hasLimit:
+		// Both exist - use the limit
+		constraintQuantity = limitQuantity
+		constraintType = "limit"
+	case hasRequest:
+		// Only request exists
+		constraintQuantity = requestQuantity
+		constraintType = "request"
+	case hasLimit:
+		// Only limit exists
+		constraintQuantity = limitQuantity
+		constraintType = "limit"
+	default:
+		// Neither exists - no validation needed
+		return nil
+	}
+
+	// Check if invocation quantity exceeds the constraint
+	if invocationQuantity.Cmp(constraintQuantity) > 0 {
+		return field.Invalid(
+			field.NewPath("spec").Child("invocationLimits").Key(resourceType.String()),
+			invocationQuantity.String(),
+			fmt.Sprintf("invocation limit quantity cannot be greater than the %s %s (%s)",
+				resourceType, constraintType, constraintQuantity.String()))
+	}
+
+	return nil
+}
+
+// validateInvocationLimits checks if the known invocation limits are valid.
+func validateInvocationLimits(spec spinv1alpha1.SpinAppSpec) *field.Error {
+	if limit, exists := spec.InvocationLimits["memory"]; exists {
+		// The memory limit must be a valid Kubernetes quantity.
+		invocationQuantity, err := resource.ParseQuantity(limit)
+		if err != nil {
+			return field.Invalid(
+				field.NewPath("spec").Child("invocationLimits").Key("memory"),
+				limit,
+				"memory limit must be a valid memory quantity (e.g. 128Mi, 1Gi)")
+		}
+
+		return validateInvocationQuantity(invocationQuantity, spec, corev1.ResourceMemory)
 	}
 
 	return nil
