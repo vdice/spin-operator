@@ -7,6 +7,8 @@ import (
 	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
 	"github.com/spinkube/spin-operator/internal/constants"
 	"github.com/stretchr/testify/require"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 )
 
 func TestValidateExecutor(t *testing.T) {
@@ -74,4 +76,52 @@ func TestValidateAnnotations(t *testing.T) {
 		Executor: "an-executor",
 	}, deploymentlessExecutor)
 	require.Nil(t, fldErr)
+}
+
+func TestValidateInvocationLimits(t *testing.T) {
+	t.Parallel()
+	spec := spinv1alpha1.SpinAppSpec{Replicas: 1}
+	fldErr := validateInvocationLimits(spec)
+	require.Nil(t, fldErr)
+
+	// Only invocation limit set
+	spec.InvocationLimits = map[string]string{
+		"memory": "50Mi",
+	}
+	fldErr = validateInvocationLimits(spec)
+	require.Nil(t, fldErr)
+
+	// Invocation limit > resource request
+	spec.Resources = spinv1alpha1.Resources{
+		Requests: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse("40Mi")},
+	}
+	fldErr = validateInvocationLimits(spec)
+	require.EqualError(t, fldErr, "spec.invocationLimits[memory]: Invalid value: \"50Mi\": invocation limit quantity cannot be greater than the memory request (40Mi)")
+
+	// Invocation limit > resource request < resource limit
+	spec.Resources = spinv1alpha1.Resources{
+		Requests: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse("40Mi")},
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse("100Mi")},
+	}
+	fldErr = validateInvocationLimits(spec)
+	require.Nil(t, fldErr)
+
+	// Invocation limit < resource limit
+	spec.Resources = spinv1alpha1.Resources{
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse("100Mi")},
+	}
+	fldErr = validateInvocationLimits(spec)
+	require.Nil(t, fldErr)
+
+	// Invocation limit > resource limit
+	spec.Resources = spinv1alpha1.Resources{
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse("40Mi")},
+	}
+	fldErr = validateInvocationLimits(spec)
+	require.EqualError(t, fldErr, "spec.invocationLimits[memory]: Invalid value: \"50Mi\": invocation limit quantity cannot be greater than the memory limit (40Mi)")
 }

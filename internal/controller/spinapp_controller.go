@@ -429,7 +429,11 @@ func constructDeployment(ctx context.Context, app *spinv1alpha1.SpinApp, config 
 		Requests: app.Spec.Resources.Requests,
 	}
 
-	env := ConstructEnvForApp(ctx, app, spinapp.DefaultHTTPPort, config.Otel)
+	env, err := ConstructEnvForApp(ctx, app, spinapp.DefaultHTTPPort, config.Otel)
+	if err != nil {
+		return nil, err
+	}
+
 	if app.Spec.Components != nil {
 		env = append(env, corev1.EnvVar{
 			Name:  "SPIN_COMPONENTS_TO_RETAIN",

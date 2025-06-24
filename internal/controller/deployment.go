@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
 	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
@@ -103,7 +105,7 @@ func ConstructVolumeMountsForApp(ctx context.Context, app *spinv1alpha1.SpinApp,
 
 // ConstructEnvForApp constructs the env for a spin app that runs as a k8s pod.
 // Variables are not guaranteed to stay backed by ENV.
-func ConstructEnvForApp(ctx context.Context, app *spinv1alpha1.SpinApp, listenPort int, otel *spinv1alpha1.OtelConfig) []corev1.EnvVar {
+func ConstructEnvForApp(ctx context.Context, app *spinv1alpha1.SpinApp, listenPort int, otel *spinv1alpha1.OtelConfig) ([]corev1.EnvVar, error) {
 	envs := make([]corev1.EnvVar, len(app.Spec.Variables))
 	// Adding the Spin Variables
 	for idx, variable := range app.Spec.Variables {
@@ -141,7 +143,21 @@ func ConstructEnvForApp(ctx context.Context, app *spinv1alpha1.SpinApp, listenPo
 		}
 	}
 
-	return envs
+	// Set known invocation limits as environment variables.
+	if limit, exists := app.Spec.InvocationLimits["memory"]; exists {
+		// Convert limit to bytes
+		quantity, err := resource.ParseQuantity(limit)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse memory limit %q: %w", limit, err)
+		}
+		bytes := quantity.ToDec().Value()
+		envs = append(envs, corev1.EnvVar{
+			Name:  "SPIN_MAX_INSTANCE_MEMORY",
+			Value: strconv.Itoa(int(bytes)),
+		})
+	}
+
+	return envs, nil
 }
 
 func SpinHealthCheckToCoreProbe(probe *spinv1alpha1.HealthProbe) (*corev1.Probe, error) {

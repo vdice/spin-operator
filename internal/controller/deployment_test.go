@@ -110,8 +110,9 @@ func TestConstructEnvForApp(t *testing.T) {
 		value     string
 		valueFrom *corev1.EnvVarSource
 
-		expectedOtelVars map[string]string
+		expectedVars     map[string]string
 		otelVars         spinv1alpha1.OtelConfig
+		invocationLimits map[string]string
 	}{
 		{
 			name:            "simple_secret_with_static_value",
@@ -158,11 +159,23 @@ func TestConstructEnvForApp(t *testing.T) {
 				ExporterOtlpMetricsEndpoint: "http://metrics",
 				ExporterOtlpLogsEndpoint:    "http://logs",
 			},
-			expectedOtelVars: map[string]string{
+			expectedVars: map[string]string{
 				"OTEL_EXPORTER_OTLP_ENDPOINT":         "http://otlp",
 				"OTEL_EXPORTER_OTLP_TRACES_ENDPOINT":  "http://traces",
 				"OTEL_EXPORTER_OTLP_METRICS_ENDPOINT": "http://metrics",
 				"OTEL_EXPORTER_OTLP_LOGS_ENDPOINT":    "http://logs",
+			},
+		},
+		{
+			name:            "memory_invocation_limit",
+			varName:         "simple_secret",
+			expectedEnvName: "SPIN_VARIABLE_SIMPLE_SECRET",
+			value:           "f00",
+			invocationLimits: map[string]string{
+				"memory": "40M",
+			},
+			expectedVars: map[string]string{
+				"SPIN_MAX_INSTANCE_MEMORY": "40000000", // 40M in bytes
 			},
 		},
 	}
@@ -177,29 +190,32 @@ func TestConstructEnvForApp(t *testing.T) {
 					ValueFrom: test.valueFrom,
 				},
 			}
+			app.Spec.InvocationLimits = test.invocationLimits
 
-			envs := ConstructEnvForApp(context.Background(), app, 0, &test.otelVars)
+			envs, err := ConstructEnvForApp(context.Background(), app, 0, &test.otelVars)
+			require.NoError(t, err)
 
 			require.Equal(t, test.expectedEnvName, envs[0].Name)
 			require.Equal(t, test.value, envs[0].Value)
 			require.Equal(t, test.valueFrom, envs[0].ValueFrom)
 
-			for key, value := range test.expectedOtelVars {
-				varNotFound := true
-				for _, envVar := range envs {
-					if envVar.Name == key {
-						varNotFound = false
-						if envVar.Value != value {
-							require.Equal(t, test.value, envVar.Value)
+			inMap := func(expected map[string]string, envs []corev1.EnvVar) {
+				for key, value := range expected {
+					varNotFound := true
+					for _, envVar := range envs {
+						if envVar.Name == key {
+							varNotFound = false
+							require.Equal(t, value, envVar.Value)
 							break
 						}
 					}
-				}
-
-				if varNotFound {
-					require.NotContains(t, test.expectedOtelVars, key)
+					if varNotFound {
+						require.NotContains(t, expected, key)
+					}
 				}
 			}
+
+			inMap(test.expectedVars, envs)
 		})
 	}
 }

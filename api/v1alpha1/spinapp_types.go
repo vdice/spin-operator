@@ -91,6 +91,11 @@ type SpinAppSpec struct {
 	// If not specified, the default service account will be used.
 	// +optional
 	ServiceAccountName string `json:"serviceAccountName,omitempty"`
+
+	// InvocationLimits define limits to be applied per invocation of the app.
+	// The keys are the names of the limits and the values are the limit values.
+	// SpinKube executors may define their own limits.
+	InvocationLimits map[string]string `json:"invocationLimits,omitempty"`
 }
 
 // SpinAppStatus defines the observed state of SpinApp
