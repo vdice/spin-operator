@@ -22,7 +22,7 @@ controllerManager:
     ## image indicates which repository and tag combination will be used for
     ## pulling the operator image.
     image:
-      repository: ghcr.io/spinkube/spin-operator
+      repository: ghcr.io/spinframework/spin-operator
       ## By default, .Chart.AppVersion is used as the tag.
       ## Updating this value to a version not aligned with the current chart
       ## version may lead to unexpected or broken behavior.
@@ -30,7 +30,7 @@ controllerManager:
     imagePullPolicy: IfNotPresent
     ## resources represent default cpu/mem limits for the operator container.
     resources:
-      # TODO: update these per https://github.com/spinkube/spin-operator/issues/21
+      # TODO: update these per https://github.com/spinframework/spin-operator/issues/21
       limits:
         cpu: 500m
         memory: 128Mi

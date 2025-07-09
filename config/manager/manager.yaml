@@ -65,7 +65,7 @@ spec:
           args:
             - --leader-elect
             - --enable-webhooks
-          image: ghcr.io/spinkube/spin-operator:latest
+          image: ghcr.io/spinframework/spin-operator:latest
           name: manager
           imagePullPolicy: IfNotPresent
           securityContext:

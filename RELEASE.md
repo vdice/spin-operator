@@ -12,21 +12,21 @@ To push a tag, do the following:
 
 ```console
 git checkout main
-git remote add upstream git@github.com:spinkube/spin-operator
+git remote add upstream git@github.com:spinframework/spin-operator
 git pull upstream main
 git tag --sign $TAG --message "Release $TAG"
 git push upstream $TAG
 ```
 
-Observe that the [CI run for that tag](https://github.com/spinkube/spin-operator/actions) completed.
+Observe that the [CI run for that tag](https://github.com/spinframework/spin-operator/actions) completed.
 
 Bump the Helm chart versions. See #311 for an example.
 
 Next, you'll need to update the documentation:
 
 ```console
-git clone git@github.com:spinkube/documentation
-cd documentation
+git clone git@github.com:spinframework/spinkube-docs
+cd spinkube-docs
 ```
 
 Change all references from the previous version to the new version.

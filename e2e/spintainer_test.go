@@ -23,7 +23,7 @@ import (
 func TestSpintainer(t *testing.T) {
 	var client klient.Client
 
-	helloWorldImage := "ghcr.io/spinkube/spin-operator/hello-world:20240708-130250-gfefd2b1"
+	helloWorldImage := "ghcr.io/spinframework/spin-operator/hello-world:20250625-200716-g19414c1"
 	testSpinAppName := "test-spintainer-app"
 
 	defaultTest := features.New("default and most minimal setup").
