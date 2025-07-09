@@ -8,9 +8,9 @@ First, any contribution and interaction on any SpinKube project MUST follow our 
 Conduct](https://github.com/spinkube/governance/blob/main/CODE_OF_CONDUCT.md). Thank you for being part of an inclusive and open community!
 
 If you plan on contributing anything complex, please go through the [open
-issues](https://github.com/spinkube/spin-operator/issues) and [PR queue](https://github.com/spinkube/spin-operator/pulls)
+issues](https://github.com/spinframework/spin-operator/issues) and [PR queue](https://github.com/spinframework/spin-operator/pulls)
 first to make sure someone else has not started working on it. If it doesn't exist already, please [open an
-issue](https://github.com/spinkube/spin-operator/issues/new) so you have a chance to get feedback from the community and
+issue](https://github.com/spinframework/spin-operator/issues/new) so you have a chance to get feedback from the community and
 the maintainers before you start working on your feature.
 
 ## Making Code Contributions to spin-operator
@@ -32,7 +32,7 @@ can correctly build the project:
 
 ```console
 # clone the repository
-$ git clone https://github.com/spinkube/spin-operator && cd spin-operator
+$ git clone https://github.com/spinframework/spin-operator && cd spin-operator
 # add a new remote pointing to your fork of the project
 $ git remote add fork https://github.com/<your-username>/spin-operator
 # create a new branch for your work
@@ -49,7 +49,7 @@ $ make test
 ```
 
 Now you should be ready to start making your contribution. To familiarize yourself with the spin-operator project,
-please read the [README](https://github.com/spinkube/spin-operator). Since most of spin-operator is written in Go, we try
+please read the [README](https://github.com/spinframework/spin-operator). Since most of spin-operator is written in Go, we try
 to follow the common Go coding conventions. If applicable, add unit or integration tests to ensure your contribution is
 correct.
 

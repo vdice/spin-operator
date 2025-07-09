@@ -3,6 +3,6 @@ kind: SpinApp
 metadata:
   name: spintainer-spinapp
 spec:
-  image: "ghcr.io/spinkube/spin-operator/hello-world:20240708-130250-gfefd2b1"
+  image: "ghcr.io/spinframework/spin-operator/hello-world:20250625-200716-g19414c1"
   replicas: 1
   executor: spintainer

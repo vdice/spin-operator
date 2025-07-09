@@ -7,7 +7,7 @@ PKG_LDFLAGS           := github.com/prometheus/common/version
 LDFLAGS               := -s -w -X ${PKG_LDFLAGS}.Version=${VERSION} -X ${PKG_LDFLAGS}.Revision=${COMMIT} -X ${PKG_LDFLAGS}.BuildDate=${DATE} -X ${PKG_LDFLAGS}.Branch=${BRANCH}
 
 # Image URL to use all building/pushing image targets
-IMG_REPO ?= ghcr.io/spinkube/spin-operator
+IMG_REPO ?= ghcr.io/spinframework/spin-operator
 IMG ?= $(IMG_REPO):$(shell git rev-parse --short HEAD)-dev
 
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
@@ -206,7 +206,7 @@ uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified 
 .PHONY: deploy
 deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
 	@echo "==> Kustomizing configuration to use: $(IMG)"
-	@cd config/manager && $(KUSTOMIZE) edit set image ghcr.io/spinkube/spin-operator=${IMG}
+	@cd config/manager && $(KUSTOMIZE) edit set image ghcr.io/spinframework/spin-operator=${IMG}
 	@echo "==> Applying Configuration"
 	@$(KUSTOMIZE) build config/default | $(KUBECTL) apply -f -
 	@echo -e "\n\nSpin Operator has been deployed - you may now want to:\n\n\tkubectl apply -f config/samples/spin-runtime-class.yaml"
