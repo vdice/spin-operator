@@ -9,7 +9,7 @@ RUN go mod download
 
 COPY . .
 
-RUN tinygo build -target=wasi -gc=leaking -no-debug -o main.wasm main.go
+RUN tinygo build -target=wasip1 -gc=leaking -buildmode=c-shared -no-debug -o main.wasm main.go
 
 FROM scratch
 COPY --from=build /opt/build/main.wasm .

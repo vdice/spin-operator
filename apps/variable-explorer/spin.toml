@@ -16,7 +16,7 @@ route = "/..."
 component = "variable-explorer"
 
 [component.variable-explorer]
-source = "target/wasm32-wasi/release/variable_explorer.wasm"
+source = "target/wasm32-wasip1/release/variable_explorer.wasm"
 allowed_outbound_hosts = []
 
 [component.variable-explorer.variables]
@@ -25,5 +25,5 @@ platform_name = "{{ platform_name }}"
 db_password = "{{ db_password }}"
 
 [component.variable-explorer.build]
-command = "cargo build --target wasm32-wasi --release"
+command = "cargo build --target wasm32-wasip1 --release"
 watch = ["src/**/*.rs", "Cargo.toml"]
