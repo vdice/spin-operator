@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/internal/constants"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/internal/constants"
 	"github.com/stretchr/testify/require"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"

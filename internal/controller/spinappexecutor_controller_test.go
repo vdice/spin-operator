@@ -22,8 +22,8 @@ import (
 	"testing"
 	"time"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/internal/generics"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/internal/generics"
 	"github.com/stretchr/testify/require"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"

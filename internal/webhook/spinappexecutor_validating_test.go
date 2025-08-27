@@ -3,8 +3,8 @@ package webhook
 import (
 	"testing"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/internal/generics"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/internal/generics"
 	"github.com/stretchr/testify/require"
 )
 

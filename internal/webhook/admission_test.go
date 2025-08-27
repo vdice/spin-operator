@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/internal/constants"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/internal/constants"
 	"github.com/stretchr/testify/require"
 	admissionv1 "k8s.io/api/admission/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -148,7 +148,7 @@ func TestCreateSpinAppWithNoExecutor(t *testing.T) {
 			Namespace: "default",
 		},
 		Spec: spinv1alpha1.SpinAppSpec{
-			Image:    "ghcr.io/spinkube/containerd-shim-spin/examples/spin-rust-hello:v0.13.0",
+			Image:    "ghcr.io/spinframework/containerd-shim-spin/examples/spin-rust-hello:latest",
 			Replicas: 2,
 		},
 	})
@@ -176,7 +176,7 @@ func TestCreateSpinAppWithSingleExecutor(t *testing.T) {
 			Namespace: "default",
 		},
 		Spec: spinv1alpha1.SpinAppSpec{
-			Image:    "ghcr.io/spinkube/containerd-shim-spin/examples/spin-rust-hello:v0.13.0",
+			Image:    "ghcr.io/spinframework/containerd-shim-spin/examples/spin-rust-hello:latest",
 			Replicas: 2,
 		},
 	})
@@ -220,7 +220,7 @@ func TestCreateSpinAppWithMultipleExecutors(t *testing.T) {
 			Namespace: "default",
 		},
 		Spec: spinv1alpha1.SpinAppSpec{
-			Image:    "ghcr.io/spinkube/containerd-shim-spin/examples/spin-rust-hello:v0.13.0",
+			Image:    "ghcr.io/spinframework/containerd-shim-spin/examples/spin-rust-hello:latest",
 			Replicas: 2,
 		},
 	})
@@ -257,7 +257,7 @@ func TestCreateInvalidSpinApp(t *testing.T) {
 			Namespace: "default",
 		},
 		Spec: spinv1alpha1.SpinAppSpec{
-			Image:    "ghcr.io/spinkube/containerd-shim-spin/examples/spin-rust-hello:v0.13.0",
+			Image:    "ghcr.io/spinframework/containerd-shim-spin/examples/spin-rust-hello:latest",
 			Replicas: -1,
 		},
 	})

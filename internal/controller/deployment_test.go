@@ -12,9 +12,9 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/internal/generics"
-	"github.com/spinkube/spin-operator/pkg/spinapp"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/internal/generics"
+	"github.com/spinframework/spin-operator/pkg/spinapp"
 )
 
 func minimalSpinApp() *spinv1alpha1.SpinApp {

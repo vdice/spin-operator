@@ -37,12 +37,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/internal/cacerts"
-	"github.com/spinkube/spin-operator/internal/generics"
-	"github.com/spinkube/spin-operator/internal/logging"
-	"github.com/spinkube/spin-operator/internal/runtimeconfig"
-	"github.com/spinkube/spin-operator/pkg/spinapp"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/internal/cacerts"
+	"github.com/spinframework/spin-operator/internal/generics"
+	"github.com/spinframework/spin-operator/internal/logging"
+	"github.com/spinframework/spin-operator/internal/runtimeconfig"
+	"github.com/spinframework/spin-operator/pkg/spinapp"
 )
 
 const (

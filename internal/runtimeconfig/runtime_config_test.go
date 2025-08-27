@@ -3,7 +3,7 @@ package runtimeconfig
 import (
 	"testing"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
 	"github.com/stretchr/testify/require"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
