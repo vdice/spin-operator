@@ -36,9 +36,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/metrics/filters"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/internal/controller"
-	"github.com/spinkube/spin-operator/internal/webhook"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/internal/controller"
+	"github.com/spinframework/spin-operator/internal/webhook"
 	//+kubebuilder:scaffold:imports
 )
 

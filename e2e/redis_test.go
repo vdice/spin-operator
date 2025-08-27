@@ -19,9 +19,9 @@ import (
 	"sigs.k8s.io/e2e-framework/pkg/features"
 	"sigs.k8s.io/e2e-framework/pkg/utils"
 
-	spinapps_v1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/e2e/helper"
-	"github.com/spinkube/spin-operator/internal/generics"
+	spinapps_v1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/e2e/helper"
+	"github.com/spinframework/spin-operator/internal/generics"
 	"github.com/stretchr/testify/require"
 )
 

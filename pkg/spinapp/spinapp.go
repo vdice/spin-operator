@@ -3,7 +3,7 @@ package spinapp
 import (
 	"fmt"
 
-	"github.com/spinkube/spin-operator/internal/constants"
+	"github.com/spinframework/spin-operator/internal/constants"
 )
 
 const (

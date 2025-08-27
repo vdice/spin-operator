@@ -1,7 +1,7 @@
 package webhook
 
 import (
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
 	ctrl "sigs.k8s.io/controller-runtime"
 )
 

@@ -1,4 +1,4 @@
-module github.com/spinkube/spin-operator
+module github.com/spinframework/spin-operator
 
 go 1.24.3
 

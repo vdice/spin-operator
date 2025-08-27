@@ -11,9 +11,9 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/internal/generics"
-	"github.com/spinkube/spin-operator/pkg/spinapp"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/internal/generics"
+	"github.com/spinframework/spin-operator/pkg/spinapp"
 )
 
 func constructRuntimeConfigSecretMount(_ctx context.Context, secretName string) (corev1.Volume, corev1.VolumeMount) {

@@ -13,7 +13,7 @@ import (
 	"sigs.k8s.io/e2e-framework/pkg/envconf"
 	"sigs.k8s.io/e2e-framework/pkg/features"
 
-	spinapps_v1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
+	spinapps_v1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
 )
 
 var runtimeClassName = "wasmtime-spin-v2"
@@ -23,7 +23,7 @@ var runtimeClassName = "wasmtime-spin-v2"
 func TestDefaultSetup(t *testing.T) {
 	var client klient.Client
 
-	helloWorldImage := "ghcr.io/spinkube/containerd-shim-spin/examples/spin-rust-hello:v0.13.0"
+	helloWorldImage := "ghcr.io/spinframework/containerd-shim-spin/examples/spin-rust-hello:latest"
 	testSpinAppName := "test-spinapp"
 
 	defaultTest := features.New("default and most minimal setup").

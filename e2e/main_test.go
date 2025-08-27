@@ -16,7 +16,7 @@ import (
 	"sigs.k8s.io/e2e-framework/pkg/envfuncs"
 	"sigs.k8s.io/e2e-framework/pkg/utils"
 
-	spinapps_v1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
+	spinapps_v1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
 )
 
 const ErrFormat = "%v: %v\n"

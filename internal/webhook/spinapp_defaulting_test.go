@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	spinv1alpha1 "github.com/spinkube/spin-operator/api/v1alpha1"
-	"github.com/spinkube/spin-operator/internal/constants"
+	spinv1alpha1 "github.com/spinframework/spin-operator/api/v1alpha1"
+	"github.com/spinframework/spin-operator/internal/constants"
 	"github.com/stretchr/testify/require"
 )
 
