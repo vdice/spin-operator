@@ -45,5 +45,5 @@ func TestValidateRuntimeClassAndSpinImage(t *testing.T) {
 			SpinImage:        nil,
 		},
 	})
-	require.EqualError(t, fldErr, "spec.deploymentConfig.runtimeClassName: Invalid value: \"null\": either runtimeClassName or spinImage must be set")
+	require.EqualError(t, fldErr, "spec.deploymentConfig.runtimeClassName: Invalid value: null: either runtimeClassName or spinImage must be set")
 }
