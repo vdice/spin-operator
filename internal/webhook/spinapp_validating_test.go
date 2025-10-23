@@ -55,7 +55,7 @@ func TestValidateAnnotations(t *testing.T) {
 		DeploymentAnnotations: map[string]string{"key": "asdf"},
 	}, deploymentlessExecutor)
 	require.EqualError(t, fldErr,
-		`spec.deploymentAnnotations: Invalid value: map[string]string{"key":"asdf"}: `+
+		`spec.deploymentAnnotations: Invalid value: {"key":"asdf"}: `+
 			`deploymentAnnotations can't be set when the executor does not use operator deployments`)
 
 	fldErr = validateAnnotations(spinv1alpha1.SpinAppSpec{
@@ -63,7 +63,7 @@ func TestValidateAnnotations(t *testing.T) {
 		PodAnnotations: map[string]string{"key": "asdf"},
 	}, deploymentlessExecutor)
 	require.EqualError(t, fldErr,
-		`spec.podAnnotations: Invalid value: map[string]string{"key":"asdf"}: `+
+		`spec.podAnnotations: Invalid value: {"key":"asdf"}: `+
 			`podAnnotations can't be set when the executor does not use operator deployments`)
 
 	fldErr = validateAnnotations(spinv1alpha1.SpinAppSpec{
