@@ -3,7 +3,7 @@ module github.com/spinframework/spin-operator
 go 1.25.3
 
 require (
-	github.com/go-logr/logr v1.4.2
+	github.com/go-logr/logr v1.4.3
 	github.com/pelletier/go-toml/v2 v2.2.4
 	github.com/prometheus/common v0.63.0
 	github.com/stretchr/testify v1.11.1
